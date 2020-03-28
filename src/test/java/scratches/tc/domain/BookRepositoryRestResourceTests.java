@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import scratches.tc.configuration.DatasourceContainer;
@@ -18,12 +20,7 @@ import static org.springframework.http.HttpStatus.CREATED;
  * @author Rashidi Zin
  */
 @Testcontainers
-@SpringBootTest(properties = {
-        "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
-        "spring.datasource.url=jdbc:tc:mysql:8:///demo",
-        "spring.jpa.generate-ddl=true"
-},
-        webEnvironment = RANDOM_PORT)
+@SpringBootTest(properties = "spring.jpa.generate-ddl=true", webEnvironment = RANDOM_PORT)
 public class BookRepositoryRestResourceTests {
 
     @Autowired
@@ -31,6 +28,13 @@ public class BookRepositoryRestResourceTests {
 
     @Container
     private static final DatasourceContainer datasource = new DatasourceContainer().withDatabaseName("demo");
+
+    @DynamicPropertySource
+    static void datasourceProperties(final DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", datasource::getJdbcUrl);
+        registry.add("spring.datasource.username", datasource::getUsername);
+        registry.add("spring.datasource.password", datasource::getPassword);
+    }
 
     @Test
     @DisplayName("Entity will be created if datasource is available")
