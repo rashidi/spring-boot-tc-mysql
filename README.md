@@ -1,4 +1,5 @@
-# Spring Boot: MySQL Container Integration
+# Spring Boot: MySQL Container Integration [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=rashidi/spring-boot-tc-mysql)](https://dependabot.com)
+
 Avoid running different databases between integration tests and production.
 
 ## Background
