@@ -155,6 +155,36 @@ org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hiberna
 This is how the application informing us that it is using MySQL Container which lead to Spring Boot automatically 
 configure our dialect to `MySQL8Dialect`.
 
+### Verify MySQL availability
+Another option is to verify that our application will connect to MySQL by triggering a check against 
+[Spring Boot Actuator Health][11] endpoint.
+
+```java
+public class DatasourceHealthTests {
+
+    @Test
+    @DisplayName("Database status will be UP and Database name should be MySQL")
+    void databaseIsAvailable() throws JsonProcessingException {
+        var response = restTemplate.getForEntity("/actuator/health", String.class);
+
+        assertThat(response.getBody()).isNotNull();
+
+        JsonNode root = new ObjectMapper().readTree(response.getBody());
+        JsonNode dbComponentNode = root.get("components").get("db");
+
+        String dbStatus = dbComponentNode.get("status").asText();
+        String dbName = dbComponentNode.get("details").get("database").asText();
+
+        assertThat(dbStatus).isEqualTo("UP");
+        assertThat(dbName).isEqualTo("MySQL");
+    }
+
+}
+```
+
+Test above verifies that there's a running MySQL database connected to the application. Full implementation can be 
+found in [DatasourceHealthTests][12].
+
 ### Conclusion
 Now that we are running the same database as production environment, we can expect more accurate results from our
 integration tests.
@@ -168,3 +198,5 @@ integration tests.
 [7]: src/main/java/scratches/tc/domain/BookRepository.java
 [9]: https://docs.spring.io/spring-framework/docs/5.2.5.RELEASE/spring-framework-reference/testing.html#testcontext-ctx-management-dynamic-property-sources
 [10]: src/test/java/scratches/tc/domain/BookRepositoryRestResourceTests.java
+[11]: https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-health
+[12]: src/test/java/scratches/tc/health/DatasourceHealthTests.java
