@@ -52,90 +52,64 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 ```
 
 ### Test Implementation
-Here we will be utilizing MySQL module from TestContainers to perform integration tests.
-
-#### Own container class
-This is optional, however it will make it easier if in future we want to switch to another container without involving
-too many changes.
-
-We will create [DatasourceContainer][8] which `extends` `MySQLContainer`.
-
-```java
-public class DatasourceContainer extends MySQLContainer<DatasourceContainer> {
-
-    private static final String IMAGE = "mysql";
-    private static final String DEFAULT_TAG = "8";
-
-    private static final String IMAGE_NAME = String.format("%s:%s", IMAGE, DEFAULT_TAG);
-
-    public DatasourceContainer() {
-        super(IMAGE_NAME);
-    }
-
-}
-```
-
-Our container will be running MySQL version 8.
+Here we will be utilizing MySQL module from TestContainers to perform integration tests. The following implementation 
+can be found in [BookRepositoryRestResourceTests][10]
 
 #### Enable TestContainers
 `org.testcontainers:junit-jupiter` dependency simplifies our implementation whereby the dependency will handle the  
 start and stop of the container.
 
-```java
-@Testcontainers
-@SpringBootTest(properties = "spring.jpa.generate-ddl=true")
-public class BookRepositoryRestResourceTests {
-
-    @Container
-    private static final DatasourceContainer datasource = new DatasourceContainer().withDatabaseName("demo");
-}
-```
-
-Now that we have a MySQL container setup, we will proceed to assigning its property via
-[Spring's DynamicPropertySource][9].
+We will start by declaring our container of choice, i.e. MySQL version 8, with database name `demo`. 
 
 ```java
 @Testcontainers
 @SpringBootTest(properties = "spring.jpa.generate-ddl=true")
 public class BookRepositoryRestResourceTests {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     @Container
-    private static final DatasourceContainer datasource = new DatasourceContainer().withDatabaseName("demo");
-
-    @DynamicPropertySource
-    static void datasourceProperties(final DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", datasource::getJdbcUrl);
-        registry.add("spring.datasource.username", datasource::getUsername);
-        registry.add("spring.datasource.password", datasource::getPassword);
-    }
+    private static final MySQLContainer<?> datasource = new MySQLContainer<>(IMAGE + ":8").withDatabaseName("demo");
 }
 ```
 
-With `@DynamicPropertySource` we will be able to avoid hard-coding the database properties. Now that we have setup all
-database related modules, let's write our integration tests.
+Next is to inform `@SpringBootTest` that we will be using `ContainerDatabaseDriver` as our driver class  
+along with our JDBC URL
+
+```java
+@Testcontainers
+@Testcontainers
+@SpringBootTest(
+        properties = {
+                "spring.jpa.generate-ddl=true",
+                "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
+                "spring.datasource.url=jdbc:tc:mysql:8:///demo"
+        }
+)
+public class BookRepositoryRestResourceTests {
+
+    @Container
+    private static final MySQLContainer<?> datasource = new MySQLContainer<>(IMAGE + ":8").withDatabaseName("demo");
+}
+```
 
 We will trigger a REST call to create a Book and given that there is a database running, the book should be created.
 
 ```java
 @Testcontainers
-@SpringBootTest(properties = "spring.jpa.generate-ddl=true", webEnvironment = RANDOM_PORT)
+@SpringBootTest(
+        properties = {
+                "spring.jpa.generate-ddl=true",
+                "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
+                "spring.datasource.url=jdbc:tc:mysql:8:///demo"
+        },
+        webEnvironment = RANDOM_PORT
+)
 public class BookRepositoryRestResourceTests {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Container
-    private static final DatasourceContainer datasource = new DatasourceContainer().withDatabaseName("demo");
-
-    @DynamicPropertySource
-    static void datasourceProperties(final DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", datasource::getJdbcUrl);
-        registry.add("spring.datasource.username", datasource::getUsername);
-        registry.add("spring.datasource.password", datasource::getPassword);
-    }
+    private static final MySQLContainer<?> datasource = new MySQLContainer<>(IMAGE + ":8").withDatabaseName("demo");
 
     @Test
     @DisplayName("Entity will be created if datasource is available")
@@ -192,5 +166,5 @@ integration tests.
 [5]: pom.xml
 [6]: src/main/java/scratches/tc/domain/Book.java
 [7]: src/main/java/scratches/tc/domain/BookRepository.java
-[8]: src/test/java/scratches/tc/configuration/DatasourceContainer.java
 [9]: https://docs.spring.io/spring-framework/docs/5.2.5.RELEASE/spring-framework-reference/testing.html#testcontext-ctx-management-dynamic-property-sources
+[10]: src/test/java/scratches/tc/domain/BookRepositoryRestResourceTests.java

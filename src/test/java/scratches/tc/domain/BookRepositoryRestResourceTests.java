@@ -6,35 +6,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import scratches.tc.configuration.DatasourceContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.testcontainers.containers.MySQLContainer.IMAGE;
 
 /**
  * @author Rashidi Zin
  */
 @Testcontainers
-@SpringBootTest(properties = "spring.jpa.generate-ddl=true", webEnvironment = RANDOM_PORT)
+@SpringBootTest(
+        properties = {
+                "spring.jpa.generate-ddl=true",
+                "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
+                "spring.datasource.url=jdbc:tc:mysql:8:///demo"
+        },
+        webEnvironment = RANDOM_PORT
+)
 public class BookRepositoryRestResourceTests {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Container
-    private static final DatasourceContainer datasource = new DatasourceContainer().withDatabaseName("demo");
-
-    @DynamicPropertySource
-    static void datasourceProperties(final DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", datasource::getJdbcUrl);
-        registry.add("spring.datasource.username", datasource::getUsername);
-        registry.add("spring.datasource.password", datasource::getPassword);
-    }
+    private static final MySQLContainer<?> datasource = new MySQLContainer<>(IMAGE + ":8").withDatabaseName("demo");
 
     @Test
     @DisplayName("Entity will be created if datasource is available")
