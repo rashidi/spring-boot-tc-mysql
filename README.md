@@ -76,7 +76,6 @@ along with our JDBC URL
 
 ```java
 @Testcontainers
-@Testcontainers
 @SpringBootTest(
         properties = {
                 "spring.jpa.generate-ddl=true",
