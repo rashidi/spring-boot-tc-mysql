@@ -59,19 +59,7 @@ can be found in [BookRepositoryRestResourceTests][10]
 `org.testcontainers:junit-jupiter` dependency simplifies our implementation whereby the dependency will handle the  
 start and stop of the container.
 
-We will start by declaring our container of choice, i.e. MySQL version 8, with database name `demo`. 
-
-```java
-@Testcontainers
-@SpringBootTest(properties = "spring.jpa.generate-ddl=true")
-public class BookRepositoryRestResourceTests {
-
-    @Container
-    private static final MySQLContainer<?> datasource = new MySQLContainer<>(IMAGE + ":8").withDatabaseName("demo");
-}
-```
-
-Next is to inform `@SpringBootTest` that we will be using `ContainerDatabaseDriver` as our driver class  
+We will start by informing `@SpringBootTest` that we will be using `ContainerDatabaseDriver` as our driver class  
 along with our JDBC URL
 
 ```java
@@ -80,13 +68,11 @@ along with our JDBC URL
         properties = {
                 "spring.jpa.generate-ddl=true",
                 "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
-                "spring.datasource.url=jdbc:tc:mysql:8:///demo"
+                "spring.datasource.url=jdbc:tc:mysql:8:///test
         }
 )
 public class BookRepositoryRestResourceTests {
 
-    @Container
-    private static final MySQLContainer<?> datasource = new MySQLContainer<>(IMAGE + ":8").withDatabaseName("demo");
 }
 ```
 
@@ -98,7 +84,7 @@ We will trigger a REST call to create a Book and given that there is a database 
         properties = {
                 "spring.jpa.generate-ddl=true",
                 "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
-                "spring.datasource.url=jdbc:tc:mysql:8:///demo"
+                "spring.datasource.url=jdbc:tc:mysql:8:///test
         },
         webEnvironment = RANDOM_PORT
 )
@@ -106,9 +92,6 @@ public class BookRepositoryRestResourceTests {
 
     @Autowired
     private TestRestTemplate restTemplate;
-
-    @Container
-    private static final MySQLContainer<?> datasource = new MySQLContainer<>(IMAGE + ":8").withDatabaseName("demo");
 
     @Test
     @DisplayName("Entity will be created if datasource is available")
