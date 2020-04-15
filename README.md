@@ -1,4 +1,4 @@
-# Spring Boot: MySQL Container Integration [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=rashidi/spring-boot-tc-mysql)](https://dependabot.com)
+# Spring Boot: MySQL Container Integration [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=rashidi/spring-boot-tc-mysql)](https://dependabot.com) ![Maven Build](https://github.com/rashidi/spring-boot-tc-mysql/workflows/Maven%20Build/badge.svg?branch=master)
 
 Avoid running different databases between integration tests and production.
 
