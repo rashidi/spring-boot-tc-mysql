@@ -19,7 +19,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 @SpringBootTest(
         properties = {
                 "spring.jpa.generate-ddl=true",
-                "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
                 "spring.datasource.url=jdbc:tc:mysql:8:///test"
         },
         webEnvironment = RANDOM_PORT

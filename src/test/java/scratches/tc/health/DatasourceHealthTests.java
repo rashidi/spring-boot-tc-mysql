@@ -20,7 +20,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(
         properties = {
                 "management.endpoint.health.show-details=always",
-                "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
                 "spring.datasource.url=jdbc:tc:mysql:8:///test"
         },
         webEnvironment = RANDOM_PORT

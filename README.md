@@ -68,7 +68,6 @@ along with our JDBC URL
 @SpringBootTest(
         properties = {
                 "spring.jpa.generate-ddl=true",
-                "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
                 "spring.datasource.url=jdbc:tc:mysql:8:///test
         }
 )
@@ -84,7 +83,6 @@ We will trigger a REST call to create a Book and given that there is a database 
 @SpringBootTest(
         properties = {
                 "spring.jpa.generate-ddl=true",
-                "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
                 "spring.datasource.url=jdbc:tc:mysql:8:///test
         },
         webEnvironment = RANDOM_PORT
