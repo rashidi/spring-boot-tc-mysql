@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <test-containers.mysql.version>1.14.2</test-containers.mysql.version>
+        <test-containers.mysql.version>1.14.3</test-containers.mysql.version>
     </properties>
 
     <dependencies>
