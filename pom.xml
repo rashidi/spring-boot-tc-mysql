@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <test-containers.mysql.version>1.14.3</test-containers.mysql.version>
+        <testcontainers.version>1.14.3</testcontainers.version>
     </properties>
 
     <dependencies>
@@ -70,13 +70,10 @@
         <dependencies>
             <dependency>
                 <groupId>org.testcontainers</groupId>
-                <artifactId>mysql</artifactId>
-                <version>${test-containers.mysql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${test-containers.mysql.version}</version>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
