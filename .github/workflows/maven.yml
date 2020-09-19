@@ -1,6 +1,16 @@
 name: Maven Build
 
-on: [push]
+on:
+  push:
+    paths: 
+      - '.mvn/wrapper/**'
+      - 'pom.xml'
+      - 'src/**'    
+  pull_request:
+    paths: 
+      - '.mvn/wrapper/**'
+      - 'pom.xml'
+      - 'src/**'
 
 jobs:
   build:
