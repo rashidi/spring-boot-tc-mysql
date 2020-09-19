@@ -1,7 +1,7 @@
 # Spring Boot: MySQL Container Integration 
 Avoid running different databases between integration tests and production.
 
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=rashidi/spring-boot-tc-mysql)](https://dependabot.com) ![Maven Build](https://github.com/rashidi/spring-boot-tc-mysql/workflows/Maven%20Build/badge.svg?branch=master)
+![Maven Build](https://github.com/rashidi/spring-boot-tc-mysql/workflows/Maven%20Build/badge.svg?branch=master)
 
 ## Background
 In general, we tend to use [H2][2] to perform integration tests within the application. However there are scenarios 
